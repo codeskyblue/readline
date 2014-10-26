@@ -160,7 +160,7 @@ func (r *reader) Read(buf []byte) (int, error) {
 // Read a line with the given prompt. The prompt can contain ANSI
 // escape sequences, they will be escaped as necessary.
 func String(prompt string) (string, error) {
-	prompt = "\x1b[0m" + prompt // Prepend a 'reset' ANSI escape sequence
+	//prompt = "\x1b[0m" + prompt // Prepend a 'reset' ANSI escape sequence
 	prompt = escapeSeq.ReplaceAllString(prompt, promptStartIgnore + "$0" + promptEndIgnore)
 	p := C.CString(prompt)
 	rp := C.readline(p)
@@ -290,12 +290,12 @@ func handleSignals() {
 	C.rl_catch_sigwinch = 0
 
 	signals := make(chan os.Signal, 2)
-	signal.Notify(signals, syscall.SIGINT, syscall.SIGWINCH)
+	signal.Notify(signals, syscall.SIGINT) //, syscall.SIGWINCH)
 
 	for s := range signals {
 		switch s {
-		case syscall.SIGWINCH:
-			C.rl_resize_terminal()
+		//case syscall.SIGWINCH:
+		//	C.rl_resize_terminal()
 
 		case syscall.SIGINT:
 			if CatchSigint {
